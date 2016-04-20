@@ -25,6 +25,7 @@
 #include <iostream>
 #include <vector>
 #include <stdlib.h>
+
 using namespace std;
 
 class Event{
@@ -40,7 +41,7 @@ class Event{
         vector<Event> fillVector(vector<Event>& eventList);
         void getLocation(vector<Event>& eventList,int index);
         void getUserinfo();
-        time_t getStartTime(vector<Event>& eventList,int index);
+        time_t getStartTime(vector<Event>& eventList,int index,int day,int month);
         void getEndTime(time_t start,vector<Event>& HardEvent,int index);
         void getDate(vector<Event>& HardEvent, int index,int month, int day);
         void makeChange(vector<Event>& HardEvent);
