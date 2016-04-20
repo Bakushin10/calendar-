@@ -13,11 +13,11 @@ Soft::Soft(){
     set_location_name();
     set_hard_task_list();
 }
+
 Soft::Soft(int dur,char* t){
     duration=dur;
     task=t;
 }
-
 
 Soft::~Soft()
 {
@@ -79,7 +79,7 @@ void Soft::getDate(vector<Soft>& softEvent,int index,int month, int day){
             cin.ignore(255, '\n');
             continue;
         }
-
+        softEvent[index].set_dday(getDay);
         softEvent[index].set_day(dayArray[getDay-1]);///initializing
         valid = false;
     }
@@ -220,6 +220,12 @@ int Soft::get_due(){
 };
 void Soft::set_due(int due){
     this->due = due;
+};
+int Soft::get_dday(){
+    return dday;
+};
+void Soft::set_dday(int dday){
+    this->dday = dday;
 };
 void Soft::set_hard_task_list(){
 
