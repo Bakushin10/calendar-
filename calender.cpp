@@ -1,5 +1,6 @@
 #include "calender.h"
 #include "string.h"
+#include "Soft.h"
 #include <iostream>
 #include <vector>
 #include <stdlib.h>
@@ -21,17 +22,17 @@ calender::~calender()
 {
     //dtor
 }
-void calender::setCalenderBoolToTrue(int a){
+bool calender::setCalenderBoolToTrue(int a){
     calenderBool[a] = true;
 };
 
-void calender::setCalenderBoolToFalse(int a){
+bool calender::setCalenderBoolToFalse(int a){
      calenderBool[a] = false;
 };
 void calender::setcaleCderChar(int a,char* b){
     calenderChar[a] = b;
 };
-char* calender::getcaleCderChar(int a){
+bool calender::getcaleCderChar(int a){
     return calenderChar[a];
 };
 
@@ -133,54 +134,7 @@ void calender::getTimeFrameSoftEvent(vector<Soft>& softEvent,int day){
     ///free up the memory
     delete[] schedule;
 }
-void calender::placeSoft(vector<Soft>& softEvent,int index){
-    if(softEvent[index].duration>2){
-        int pieces=(softEvent[index].duration)/2;
-        if((softEvent[index].duration%2)!=0){//Check if the event was divisble into 2 hour chunks
-            for(int i=1;i<pieces;i++){
-                Soft* newSoft = new Soft(2,softEvent[index].get_task);//Creates new task
-                newSoft.set_day(softEvent[index].get_day);//Carries associated due day
-                softEvent.pushBack(*newSoft);
-            }
-            Soft* newSoft = new Soft(1,softEvent[index].get_task);//adds remaining chunk
-        }
-        else{
-            for(int i=1;i<pieces;i++){//If no remainder
-                Soft* newSoft = new Soft(2,softEvent[index].get_task);//Creates new task
-                newSoft.set_day(softEvent[index].get_day);//Carries associated due day
-                softEvent.pushBack(*newSoft);
-            }
-        }
-        softEvent[index].set_duration(2);
-    }
-    for(int i=0;i<softEvent.size();i++){
-        int consec=0;
-        int maxConsec=0;
-        int start=-1;
-        int latest=softEvent[i].get_day*24;//hours until due date
-        for(int j=0;j<latest;j++){
-            if(!getCalendarBool(j)){
-                consec++;
-                if(consec>maxConsec){
-                    maxConsec=consec;
-                    start=i-maxConsec;
-                }
-            }
-            else
-                consec=0;
-        }
-        if(start<0){
-            cout<<"Insufficient space for soft task!!!"<<endl;
-            break;
-        }
-        else{
-            for(int j=0;j<softEvent[i].get_duration;j++){
-                setCalendarBoolToTrue(start+j);
-                setCaleCdarChar(start+j,softEvent[i].get_task);
-            }
-        }
-    }
-}
+
 void calender::isFitInSchedule(vector<Soft>& softEvent,int day,int index,bool* schedule){
     bool* isSchedule = new bool[softEvent.size()+1];
 
@@ -262,6 +216,8 @@ void calender::isFitInSchedule(vector<Soft>& softEvent,int day,int index,bool* s
     }
     else{
 
+
+
         /*
 
 
@@ -272,7 +228,9 @@ void calender::isFitInSchedule(vector<Soft>& softEvent,int day,int index,bool* s
             find a best(possible) fit
             The time frame will not be determined based on free time availble
         */
-            fintBestFit(due,duration,startTimeFrame,endTimeFrame,schedule,consec,maxConsec);
+
+
+          //  fintBestFit(due,duration,startTimeFrame,endTimeFrame,schedule,consec,maxConsec);
 
     }
 
@@ -295,6 +253,73 @@ void calender::isFitInSchedule(vector<Soft>& softEvent,int day,int index,bool* s
 
 }
 
+void calender::placeSoft(vector<Soft>& softEvent,int index,int soft_count){
+
+    //brkaing down the duration...
+    if(softEvent[index].get_duration()>2){
+        int pieces=(softEvent[index].get_duration())/2;
+        int remainder=softEvent[index].get_duration()%2;
+        if(remainder!=0){//Check if the event was divisble into 2 hour chunks
+            for(int i=1;i<pieces;i++){
+                Soft* newSoft = new Soft(2,softEvent[index].get_task());//Creates new task
+
+                newSoft->set_dday(softEvent[index].get_dday());//Carries associated due day
+                //softEvent.pushBack(*newSoft);
+                softEvent.push_back(*newSoft);
+            }
+            Soft* newSoft = new Soft(1,softEvent[index].get_task());
+            newSoft->set_dday(softEvent[index].get_dday());//Carries associated due day
+            softEvent.push_back(*newSoft);
+            //adds remaining chunk
+        }
+        else{
+            for(int i=1;i<pieces;i++){//If no remainder
+                Soft* newSoft = new Soft(2,softEvent[index].get_task());//Creates new task
+                newSoft->set_dday(softEvent[index].get_dday());//Carries associated due day
+                newSoft->set_due(softEvent[index].get_due());
+                softEvent.push_back(*newSoft);
+            }
+        }
+        softEvent[index].set_duration(2);
+    }///end of if
+
+    ///
+    for(int i=soft_count;i<softEvent.size();i++){
+        int consec=0;
+        int maxConsec=0;
+        int start=-1;
+        cout<<"get_dday = "<<" "<<softEvent[i].get_dday()<<endl;
+
+        int latest=(softEvent[i].get_dday()-1)*24+softEvent[i].get_due();//hours until due date
+        cout<<"laest is  = "<<" "<<latest<<endl;
+
+        for(int j=0;j<latest;j++){
+            if(!getCalenderBool(j)){
+                consec++;
+                if(consec>maxConsec){
+                    maxConsec=consec;
+                    start=j-maxConsec;
+
+                }
+            }
+            else
+                consec=0;
+        }///end of for
+
+         cout<<"starts = "<<start<<endl;
+        if(start<0){
+            cout<<"Insufficient space for soft task!!!"<<endl;
+            break;
+        }
+        else{
+            for(int j=0;j<softEvent[i].get_duration();j++){
+                setCalenderBoolToTrue(start+j+1);
+                setcaleCderChar(start+j+1,softEvent[i].get_task());
+            }
+        }
+    }
+}
+
 void calender::fintBestFit(int due,int duration,int& startTimeFrame,int& endTimeFrame,bool* schedule,int&consec,int& maxConsec){
 
     if(hasEnoughTime(schedule)){
@@ -314,9 +339,6 @@ bool calender::hasEnoughTime(bool* schedule){
             cout<<i+1<<" "<<"FREE\n";
         i++;
     }
-
-
-
 }
 
 void calender::findEarliestTimeFrame(int due,int duration,int& startTimeFrame,int& endTimeFrame,bool* schedule,int&consec,int& maxConsec){
