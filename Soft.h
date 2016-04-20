@@ -9,6 +9,7 @@ class Soft{
 
     public:
         Soft();
+        Soft(int dur,char* t);
         virtual ~Soft();
         void getDuration(vector<Soft>& softEvent,int index);
         void getLocation(vector<Soft>& softEvent,int index);
@@ -36,6 +37,8 @@ class Soft{
         void set_hard_task_list();
         int get_due();
         void set_due(int a);
+        void set_dday(int a);
+        int get_dday();
 
     protected:
 
@@ -49,7 +52,8 @@ class Soft{
         unsigned int duration;
         char* task;
         char** soft_task_list;
-        int due;
+        int due;///actual date
+        int dday;///time from current to due
 };
 
 #endif // SOFT_H
