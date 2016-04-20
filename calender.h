@@ -25,6 +25,8 @@ class calender{
         void fintBestFit(int due,int duration,int& startTimeFrame,int& endTimeFrame,bool* schedule,int&consec,int& maxConsec);
         bool hasEnoughTime(bool* schedule);
 
+        void placeSoft(vector<Soft>& softEvent,int index,int soft_count);
+
         int get_counter();
         void increment_counter();
         bool getcaleCderChar(int a);
