@@ -26,8 +26,6 @@ newSleepTimeChang::newSleepTimeChang(calender* calend) : calen(calend){
         sleepStarts[i] = start;
         sleepEnds[i] = end;
     }
-    for(int i=0;i<7;i++)
-        cout<<" yes "<<sleepStarts[i]<<" "<<sleepEnds[i]<<endl;
 
     bool isValid = false;
     int j=0;
@@ -65,7 +63,8 @@ void newSleepTimeChang::get_new_sleep(int month,int day){
     for(int i = old_ss;i<=old_se;i++){
         ///set value to false
         ///free  sleep time
-        calen->calenderBool[i] = false;
+        cout<<"setting "<<i<<" to FALSE...\n";
+        calen->setCalenderBoolToFalse(i);
        //setCalenderBoolToFalse(i);
         //setcaleCderChar();
 
@@ -92,6 +91,7 @@ void newSleepTimeChang::get_new_sleep(int month,int day){
     for(int i = new_ss;i<=new_se;i++){
         ///set value to true
         ///assign new sleep time
+        cout<<"setting "<<i<<" to TRUE...\n";
         calen->setCalenderBoolToTrue(i);
         char* temp = new char[6];
         strcpy(temp,"sleep");
@@ -121,20 +121,20 @@ int newSleepTimeChang::getSleepTime(int num,int changeDay,int day){
             cout<<i<<". "<<i<<endl;
 
         }
-        /*
-        int i = 24*chnageDay;
-        int j = 24*(chnageDay+1);
+
+        int i = 24*changeDay;
+        int j = 24*(changeDay+1);
         if(j>168)
-            j = 168
+            j = 168;
 
         for(i;i<=j;i++){
-            if(getCalenderBool(i))
-                cout<<i<<". "<<getcaleCderChar(i)<<endl;
+            if(calen->getCalenderBool(i))
+                cout<<i<<". "<<"scheduled\n";
             else
-                cout<<i<<". <<"Free\n";
+                cout<<i<<". "<<"Free\n";
         }
 
-            */
+
 
 
         while(valid){
@@ -142,8 +142,9 @@ int newSleepTimeChang::getSleepTime(int num,int changeDay,int day){
             cin>>newTime;
 
             if(cin.fail() ||validTimeFrame(newTime)){
-                std::cout<<"\n*** Invalid input ***\n";
-                std::cout<<"    Enter an Integer\n";
+                std::cout<<"\n *** Invalid input ***\n";
+                std::cout<<"      Enter an Integer\n";
+                std::cout<<" you cannnot sleep between the events\n";
                 cin.clear();
                 cin.ignore(255, '\n');
                 continue;
@@ -222,6 +223,7 @@ int newSleepTimeChang::getChnageDay(int month,int day){
     bool valid = true;
 
     cout<<"\n\nwhat day of sleeping schedule do you want to change \n";
+    cout<<"Please choose 1-7 : \n\n";
 
     for(int i =0 ;i<7;i++){
         cout<<i+1<<". "<<month<<"/"<<day+i<<"\n";
@@ -231,7 +233,7 @@ int newSleepTimeChang::getChnageDay(int month,int day){
         cin>>choice;
         if(cin.fail() ||choice>7 || choice<1 ){
             std::cout<<"\n*** Invalid input ***\n";
-            std::cout<<"    Enter an Integer\n";
+            std::cout<<"    Enter a valid input\n";
             cin.clear();
             cin.ignore(255, '\n');
             continue;
