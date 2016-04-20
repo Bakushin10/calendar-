@@ -22,6 +22,7 @@ Event::Event(time_t start, time_t end,char* location){
 }
 
 Event::Event(){
+
     location_name = new char*[25];
     hard_task_list = new char*[6];
     set_location_name();
@@ -44,10 +45,11 @@ void Event::getTask(vector<Event>& eventList,int index){
     for(int i=0;i<6;i++){
         cout<<i+1<<". "<<hard_task_list[i]<<endl;
     }
-    cin>>choice;
+
 
     while(valid){
-        if(choice<1 || cin.fail() ||choice>5){
+        cin>>choice;
+        if(choice<1 || cin.fail() ||choice>6){
             cout<<"+++ invalid input +++\n\n\n";
             continue;
         }
@@ -94,7 +96,7 @@ void Event::getDate(vector<Event>& eventList,int index,int month, int day){
 
 }//end of getDate
 
-time_t Event::getStartTime(vector<Event>& eventList,int index){
+time_t Event::getStartTime(vector<Event>& eventList,int index,int day,int month){
     int* time = new int[24];
     time_t Start;
     bool valid = true;
@@ -102,14 +104,13 @@ time_t Event::getStartTime(vector<Event>& eventList,int index){
     std::cout<<"choose statring time: "<<endl;
 
     ///time frame of 0-24
+    cout<<"schedule of "<<month<<"/"<<day<<endl<<endl;
+
     for(int i=0;i<24;i++){
         time[i] = i;
-        if(i>=eventList[index].get_sleep_time_begin() && i<=eventList[index].get_sleep_time_end()){
-            cout<<i+1<<". "<< time[i]<<" sleep"<<endl;
-            continue;
-        }
-            cout<<i+1<<". "<< time[i]<<endl;
+        cout<<i+1<<". "<< time[i]<<endl;
     }
+    cout<<"Please choose the time of the event starts";
 
     while(valid){
         cin>>Start;
@@ -154,7 +155,6 @@ void Event::getEndTime(time_t start,vector<Event>& eventList,int index){
         time[i] = i;
 
     ///display the ending time
-    cout<<"Pick ending time"<<endl;
     for(int i=0;i<24;i++){
 
         if(i>=start){
@@ -166,6 +166,7 @@ void Event::getEndTime(time_t start,vector<Event>& eventList,int index){
         }
     }
 
+     cout<<"Please choose an ending time"<<endl;
     while(valid){
         cin>>end;
         if(cin.fail() ||end>24 || end<1 || end<=start ||isSleeping(eventList,end,index)){
@@ -185,10 +186,9 @@ int Event::menu(){
     int choice;
     std::cout<<"1. Add Event"<<endl;
     std::cout<<"2. show list"<<endl;
-    std::cout<<"3. change an event"<<endl;
-    std::cout<<"4. show Calender"<<endl;
-    std::cout<<"6. sleep time "<<endl;
-    std::cout<<"5. Exit"<<endl;
+    //std::cout<<"3. change an event"<<endl;
+    std::cout<<"3. sleep time "<<endl;
+    std::cout<<"4. Exit"<<endl;
     std::cout<<":";
     std::cin >> choice;
 
@@ -201,11 +201,13 @@ void Event::getLocation(vector<Event>& eventList,int index){
     for(int i=0;i<25;i++){
         cout<<i+1<<". "<<location_name[i]<<endl;
     }
-    cin>>choice;
 
     while(valid){
-        if(choice<1 || cin.fail() ||choice>26){
+        cin>>choice;
+        if(choice<1 || cin.fail() ||choice>25){
             cout<<"+++ invalid input +++\n\n\n";
+            cin.clear();
+            cin.ignore(255, '\n');
             continue;
         }
         valid = false;
@@ -218,7 +220,7 @@ void Event::getSleepingTime(vector<Event>& eventList,int index){
     bool valid = true;
     int start,end;
 cout<<eventList[index].get_start_time()<<"-"<<eventList[index].get_end_time()<<endl;
-    cout<<"Enter sleeping time begin:\n";
+
     for(int i=0;i<24;i++){
      if(i >= eventList[index].get_start_time() && i <= eventList[index].get_end_time()){
             cout<<i<<". "<<i<<"   Event\n";
@@ -226,6 +228,7 @@ cout<<eventList[index].get_start_time()<<"-"<<eventList[index].get_end_time()<<e
         }
             cout<<i<<". "<<i<<endl;
     }
+        cout<<"Enter sleeping time begin:\n";
 
     while(valid){
         cin>>start;
@@ -360,6 +363,8 @@ void Event::set_hard_task_list(){
     strcpy(hard_task_list[1],"Exam");
     strcpy(hard_task_list[2],"HW");
     strcpy(hard_task_list[3],"Class");
+    strcpy(hard_task_list[4],"HangOut");
+    strcpy(hard_task_list[5],"meetUp");
     ///create more location...
 }
 void Event::set_location_name(){
@@ -446,7 +451,7 @@ void Event::changeField(vector<Event>& HardEvent, int index,int field){
 
     switch(field){
         case 1:
-            getStartTime(HardEvent,index);
+            getStartTime(HardEvent,index,21,4);
             break;
         case 2:
             getEndTime(HardEvent[index].get_start_time(),HardEvent,index);
